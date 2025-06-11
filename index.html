@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PORKYRIOS - El verdadero lujo está en el sabor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero-section {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #FF6B35;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #FF6B35;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            z-index: 10001;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .category-filter {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 12px 16px;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 80px;
+        }
+        
+        .category-filter:hover {
+            border-color: #FF6B35;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+        
+        .category-filter.active {
+            border-color: #FF6B35;
+            background: linear-gradient(135deg, #FF6B35, #FF8E53);
+            color: white;
+        }
+        
+        .category-filter span:last-child {
+            font-size: 12px;
+            font-weight: 500;
+            margin-top: 4px;
+        }
+        
+        .toggle-bg {
+            transition: background-color 0.3s ease;
+        }
+        
+        .toggle-dot {
+            transition: transform 0.3s ease;
+        }
+
+        .admin-tab {
+            padding: 12px 16px;
+            border-bottom: 2px solid transparent;
+            color: #6b7280;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+        }
+
+        .admin-tab.active {
+            color: #FF6B35;
+            border-bottom-color: #FF6B35;
+        }
+
+        .admin-tab:hover {
+            color: #FF6B35;
+            background-color: rgba(255, 107, 53, 0.1);
+        }
+
+        .admin-content {
+            display: none;
+        }
+
+        .admin-content.active {
+            display: block;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="text-center">
+            <div class="spinner"></div>
+            <p class="text-white mt-4">Procesando...</p>
+        </div>
+    </div>
+
+    <header class="hero-section text-white py-4 px-6 shadow-lg">
+        <div class="flex justify-between items-center max-w-6xl mx-auto">
+            <div class="flex items-center space-x-3">
+                <img src="https://i.imgur.com/IQvZnMS.png" alt="PORKYRIOS" class="w-12 h-12 rounded-full border-2 border-white shadow-lg object-cover">
+                <div>
+                    <h1 class="text-2xl font-bold">PORKYRIOS</h1>
+                    <p class="text-xs opacity-80">El verdadero lujo está en el sabor</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="menu-btn" class="flex items-center space-x-2 hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-lg transition">
+                    <i class="fas fa-utensils"></i>
+                    <span class="hidden sm:inline">Menú</span>
+                </button>
+                <button id="cart-btn" class="relative flex items-center space-x-2 hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-lg transition">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="hidden sm:inline">Carrito</span>
+                    <span id="cart-badge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-6 w-6 flex items-center justify-center hidden">0</span>
+                </button>
+                <button id="admin-btn" class="hidden flex items-center space-x-2 hover:bg-white hover:bg-opacity-20 px-3 py-2 rounded-lg transition">
+                    <i class="fas fa-cog"></i>
+                    <span class="hidden sm:inline">Admin</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Screen -->
+    <div id="home-screen" class="screen active">
+        <div class="hero-section text-white py-20">
+            <div class="max-w-4xl mx-auto text-center px-6">
+                <div class="mb-8">
+                    <img src="https://i.imgur.com/IQvZnMS.png" alt="PORKYRIOS Logo" class="w-36 h-36 mx-auto mb-6 rounded-full border-4 border-white shadow-2xl object-cover">
+                </div>
+                <h2 class="text-5xl font-bold mb-4">¡Bienvenido a PORKYRIOS!</h2>
+                <p class="text-2xl mb-2 opacity-90 font-medium">EL VERDADERO LUJO</p>
+                <p class="text-xl mb-8 opacity-80">ESTÁ EN EL SABOR</p>
+                <p class="text-lg mb-8 opacity-75">Los tacos más deliciosos de Mérida, Yucatán</p>
+                <button id="start-order-btn" class="btn-primary text-white font-bold py-4 px-8 rounded-full text-lg shadow-lg hover:shadow-xl">
+                    🍽️ ¡Hacer mi pedido!
+                </button>
+            </div>
+        </div>
+        
+        <div class="max-w-6xl mx-auto py-16 px-6">
+            <div class="text-center mb-12">
+                <h3 class="text-3xl font-bold text-gray-800 mb-4">¿Por qué elegir PORKYRIOS?</h3>
+                <p class="text-lg text-gray-600">El verdadero lujo está en cada bocado</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center card-hover bg-white p-8 rounded-xl shadow-lg">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center">
+                        <span class="text-2xl text-white">⚡</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Entrega Rápida</h3>
+                    <p class="text-gray-600">Tus tacos listos en 15-20 minutos. El sabor no espera.</p>
+                </div>
+                <div class="text-center card-hover bg-white p-8 rounded-xl shadow-lg">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center">
+                        <span class="text-2xl text-white">🥩</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Ingredientes Premium</h3>
+                    <p class="text-gray-600">Solo los mejores cortes y verduras más frescas.</p>
+                </div>
+                <div class="text-center card-hover bg-white p-8 rounded-xl shadow-lg">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full flex items-center justify-center">
+                        <span class="text-2xl text-white">❤️</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-gray-800">Hecho con Pasión</h3>
+                    <p class="text-gray-600">Recetas tradicionales yucatecas con el toque PORKYRIOS.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Menu Screen -->
+    <div id="menu-screen" class="screen">
+        <div class="max-w-6xl mx-auto py-8 px-6">
+            <div class="text-center mb-8">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Nuestro Menú</h2>
+                <p class="text-lg text-gray-600">Descubre los sabores auténticos de PORKYRIOS</p>
+            </div>
+
+            <div class="flex justify-center mb-8">
+                <div class="flex flex-wrap gap-4" id="category-filters"></div>
+            </div>
+
+            <div class="max-w-md mx-auto mb-8">
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="Buscar platillos..." class="w-full py-3 pl-10 pr-4 border border-gray-300 rounded-full focus:outline-none focus:border-orange-500">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="menu-items"></div>
+        </div>
+    </div>
+
+    <!-- Cart Screen -->
+    <div id="cart-screen" class="screen">
+        <div class="max-w-4xl mx-auto py-8 px-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Tu Carrito</h2>
+            
+            <div id="cart-content">
+                <div id="empty-cart" class="text-center py-16 hidden">
+                    <i class="fas fa-shopping-cart text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-bold text-gray-600 mb-2">Tu carrito está vacío</h3>
+                    <p class="text-gray-500 mb-6">Agrega algunos deliciosos platillos para continuar</p>
+                    <button id="back-to-menu" class="btn-primary text-white px-6 py-3 rounded-full">
+                        Explorar Menú
+                    </button>
+                </div>
+
+                <div id="cart-items" class="space-y-4 mb-8"></div>
+
+                <div id="cart-summary" class="bg-white rounded-xl shadow-lg p-6 hidden">
+                    <h3 class="text-xl font-bold mb-4">Resumen del Pedido</h3>
+                    
+                    <div class="mb-6">
+                        <label class="flex items-center justify-between p-4 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                            <div class="flex items-center space-x-3">
+                                <i class="fas fa-truck text-orange-500 text-xl"></i>
+                                <div>
+                                    <p class="font-medium text-gray-800">Método de Entrega</p>
+                                    <p class="text-sm text-gray-500" id="delivery-method-text">Envío a domicilio (+$35 MXN)</p>
+                                </div>
+                            </div>
+                            <div class="relative">
+                                <input type="checkbox" id="delivery-toggle" class="sr-only">
+                                <div class="toggle-bg w-16 h-8 bg-orange-500 rounded-full border border-gray-300 cursor-pointer relative">
+                                    <div class="toggle-dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition-all duration-300 ease-in-out shadow-md" style="transform: translateX(4px);"></div>
+                                    <span class="absolute left-2 top-1 text-xs font-medium text-white select-none">📦</span>
+                                    <span class="absolute right-2 top-1 text-xs font-medium text-white select-none">🚚</span>
+                                </div>
+                            </div>
+                        </label>
+                        
+                        <div id="delivery-form" class="mt-4 space-y-4">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                <p class="text-sm text-blue-800"><i class="fas fa-map-marker-alt mr-1"></i> Completa tu dirección de entrega</p>
+                            </div>
+                            <input type="text" id="street" placeholder="Calle (ej: Calle 60)" class="w-full p-3 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                            <div class="grid grid-cols-2 gap-4">
+                                <input type="text" id="number" placeholder="Número (ej: 123)" class="w-full p-3 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                                <input type="text" id="colony" placeholder="Colonia (ej: Centro)" class="w-full p-3 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                            </div>
+                            <input type="text" id="references" placeholder="Referencias (ej: Casa azul, portón negro)" class="w-full p-3 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                        </div>
+
+                        <div id="pickup-info" class="mt-4 bg-green-50 border border-green-200 rounded-lg p-4 hidden">
+                            <h4 class="font-medium text-green-800 mb-2"><i class="fas fa-store mr-1"></i> Recoger en Local</h4>
+                            <p class="text-sm text-green-700">📍 <strong>Dirección:</strong> Calle 60 #123, Centro, Mérida, Yucatán</p>
+                            <p class="text-sm text-green-700">⏰ <strong>Horario:</strong> Lunes a Domingo 8:00 AM - 10:00 PM</p>
+                            <p class="text-sm text-green-700">📞 <strong>Teléfono:</strong> (999) 123-4567</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 mb-6">
+                        <div class="flex justify-between">
+                            <span>Subtotal:</span>
+                            <span id="payment-subtotal">$0.00 MXN</span>
+                        </div>
+                        <div id="delivery-cost-container" class="flex justify-between">
+                            <span>Envío:</span>
+                            <span id="delivery-cost">$35.00 MXN</span>
+                        </div>
+                        <div class="flex justify-between text-xl font-bold border-t pt-2">
+                            <span>Total:</span>
+                            <span id="total-cost">$0.00 MXN</span>
+                        </div>
+                    </div>
+
+                    <button id="checkout-btn" class="w-full btn-primary text-white font-bold py-4 rounded-lg text-lg">
+                        Proceder al Pago
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Screen -->
+    <div id="payment-screen" class="screen">
+        <div class="max-w-2xl mx-auto py-8 px-6">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Información de Pago</h2>
+            
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <h3 class="text-xl font-bold mb-6">Datos de la Tarjeta</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <input type="text" id="card-number" placeholder="Número de tarjeta" maxlength="19" class="w-full p-4 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                    <input type="text" id="expiry" placeholder="MM/AA" maxlength="5" class="w-full p-4 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                    <input type="text" id="cvv" placeholder="CVV" maxlength="4" class="w-full p-4 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                    <input type="text" id="name" placeholder="Nombre del titular" class="w-full p-4 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none">
+                    <input type="tel" id="customer-phone" placeholder="Teléfono (opcional)" class="w-full p-4 border border-gray-300 rounded-lg focus:border-orange-500 focus:outline-none md:col-span-2">
+                </div>
+
+                <div class="flex space-x-4">
+                    <button id="back-to-cart" class="flex-1 btn-secondary py-4 rounded-lg font-bold">
+                        Regresar
+                    </button>
+                    <button id="process-payment" class="flex-1 btn-primary text-white py-4 rounded-lg font-bold">
+                        Pagar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tracking Screen -->
+    <div id="tracking-screen" class="screen">
+        <div class="max-w-2xl mx-auto py-8 px-6 text-center">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="mb-8">
+                    <i class="fas fa-check-circle text-6xl text-green-500 mb-4"></i>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">¡Pedido Confirmado!</h2>
+                    <p class="text-lg text-gray-600">Tu orden está siendo preparada con amor</p>
+                </div>
+
+                <div id="order-details" class="text-left mb-8"></div>
+
+                <div class="mb-8">
+                    <h3 class="text-xl font-bold mb-4">Estado del Pedido</h3>
+                    <div class="bg-gray-100 rounded-lg p-4">
+                        <div class="flex items-center justify-between">
+                            <span id="order-status" class="text-lg font-medium">Preparando</span>
+                            <span id="estimated-time" class="text-sm text-gray-600">15-20 min</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
+                            <div id="progress-bar" class="bg-orange-500 h-2 rounded-full transition-all duration-1000" style="width: 25%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <button id="track-new-order" class="btn-primary text-white px-8 py-3 rounded-full">
+                    Hacer Nuevo Pedido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Screen -->
+    <div id="admin-screen" class="screen">
+        <div class="max-w-6xl mx-auto p-6">
+            <div class="bg-white rounded-xl shadow-lg p-8">
+                <div class="flex justify-between items-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800">
+                        <i class="fas fa-cogs text-orange-500"></i> Panel de Administración PORKYRIOS
+                    </h2>
+                    <button id="exit-admin-btn" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Salir del Admin
+                    </button>
+                </div>
+                
+                <div class="border-b border-gray-200 mb-8">
+                    <nav class="-mb-px flex space-x-8">
+                        <button class="admin-tab active" data-tab="categories">
+                            <i class="fas fa-tags"></i> Categorías
+                        </button>
+                        <button class="admin-tab" data-tab="products">
+                            <i class="fas fa-utensils"></i> Productos
+                        </button>
+                        <button class="admin-tab" data-tab="settings">
+                            <i class="fas fa-cog"></i> Configuración
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- Admin Categories -->
+                <div id="admin-categories" class="admin-content active">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-700">Gestión de Categorías</h3>
+                        <button class="btn-primary px-4 py-2 rounded-lg" onclick="showAddCategoryForm()">
+                            <i class="fas fa-plus"></i> Agregar Categoría
+                        </button>
+                    </div>
+                    
+                    <div class="grid gap-4" id="categories-list"></div>
+
+                    <div id="category-form" class="hidden mt-8 p-6 bg-gray-50 rounded-lg">
+                        <h4 class="text-lg font-bold mb-4">Agregar Nueva Categoría</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="category-id" placeholder="ID único (ej: postres)" class="form-input">
+                            <input type="text" id="category-name" placeholder="Nombre (ej: Postres)" class="form-input">
+                            <input type="text" id="category-icon" placeholder="Emoji (ej: 🍰)" class="form-input" maxlength="2">
+                            <select id="category-status" class="form-input">
+                                <option value="true">Activa</option>
+                                <option value="false">Inactiva</option>
+                            </select>
+                        </div>
+                        <div class="flex space-x-4 mt-4">
+                            <button class="btn-primary px-4 py-2 rounded" onclick="saveCategory()">Guardar</button>
+                            <button class="btn-secondary px-4 py-2 rounded" onclick="cancelCategoryForm()">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Products -->
+                <div id="admin-products" class="admin-content">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-700">Gestión de Productos</h3>
+                        <button class="btn-primary px-4 py-2 rounded-lg" onclick="showAddProductForm()">
+                            <i class="fas fa-plus"></i> Agregar Producto
+                        </button>
+                    </div>
+                    
+                    <div class="grid gap-4" id="admin-products-list"></div>
+
+                    <div id="product-form" class="hidden mt-8 p-6 bg-gray-50 rounded-lg">
+                        <h4 class="text-lg font-bold mb-4">Agregar/Editar Producto</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="product-name" placeholder="Nombre del producto" class="form-input">
+                            <input type="number" id="product-price" placeholder="Precio (MXN)" step="0.01" class="form-input">
+                            <select id="product-category" class="form-input">
+                                <option value="">Seleccionar categoría</option>
+                            </select>
+                            <input type="url" id="product-image" placeholder="URL de imagen" class="form-input">
+                            <textarea id="product-description" placeholder="Descripción del producto" class="form-input md:col-span-2" rows="3"></textarea>
+                            <input type="text" id="product-badges" placeholder="Badges (separados por coma: popular,spicy,new)" class="form-input md:col-span-2">
+                        </div>
+                        <div class="flex space-x-4 mt-4">
+                            <button class="btn-primary px-4 py-2 rounded" onclick="saveProduct()">Guardar</button>
+                            <button class="btn-secondary px-4 py-2 rounded" onclick="cancelProductForm()">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin Settings -->
+                <div id="admin-settings" class="admin-content">
+                    <h3 class="text-xl font-bold text-gray-700 mb-6">Configuración General</h3>
+                    
+                    <div class="space-y-6">
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h4 class="text-lg font-bold mb-4">Configuración de Entrega</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Costo de envío (MXN)</label>
+                                    <input type="number" id="delivery-cost-setting" placeholder="35" class="form-input" value="35">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Tiempo estimado (min)</label>
+                                    <input type="number" id="delivery-time" placeholder="30" class="form-input" value="30">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Envío gratis desde (MXN)</label>
+                                    <input type="number" id="free-delivery-min" placeholder="200" class="form-input" value="200">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Radio de entrega (km)</label>
+                                    <input type="number" id="delivery-radius" placeholder="15" class="form-input" value="15">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h4 class="text-lg font-bold mb-4">Información del Restaurante</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                                    <input type="tel" id="restaurant-phone" placeholder="(999) 123-4567" class="form-input" value="(999) 123-4567">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Dirección completa</label>
+                                    <input type="text" id="restaurant-address" placeholder="Calle 60 #123, Centro, Mérida" class="form-input" value="Calle 60 #123, Centro, Mérida, Yucatán">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Hora de apertura</label>
+                                    <input type="time" id="opening-time" class="form-input" value="08:00">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Hora de cierre</label>
+                                    <input type="time" id="closing-time" class="form-input" value="22:00">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary px-6 py-3 rounded-lg" onclick="saveSettings()">
+                            <i class="fas fa-save"></i> Guardar Configuración
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales mejoradas
+        let menuData = {
+            categories: [
+                {id: "tacos", name: "Tacos", icon: "🌮", active: true},
+                {id: "tortas", name: "Tortas", icon: "🥪", active: true},
+                {id: "bebidas", name: "Bebidas", icon: "🥤", active: true},
+                {id: "postres", name: "Postres", icon: "🍰", active: true}
+            ],
+            products: [
+                {id: 1, name: "Taco de Carnitas", price: 15, category: "tacos", description: "Deliciosa carne deshebrada con cebolla y cilantro", image: "https://images.unsplash.com/photo-1551504734-5ee1c4a1479b?w=400", available: true, badges: ["popular"]},
+                {id: 2, name: "Taco al Pastor", price: 18, category: "tacos", description: "Carne marinada con piña y especias", image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?w=400", available: true, badges: ["popular", "spicy"]},
+                {id: 3, name: "Taco de Cochinita", price: 20, category: "tacos", description: "Cochinita pibil tradicional yucateca", image: "https://images.unsplash.com/photo-1613514785940-daed07799d9b?w=400", available: true, badges: ["spicy"]},
+                {id: 4, name: "Torta de Milanesa", price: 45, category: "tortas", description: "Milanesa empanizada con verduras frescas", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400", available: true},
+                {id: 5, name: "Torta Cubana", price: 55, category: "tortas", description: "La torta más completa con todos los ingredientes", image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400", available: true, badges: ["popular"]},
+                {id: 6, name: "Agua de Horchata", price: 12, category: "bebidas", description: "Refrescante agua de horchata casera", image: "https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400", available: true},
+                {id: 7, name: "Flan Napolitano", price: 25, category: "postres", description: "Flan casero con caramelo", image: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400", available: true}
+            ]
+        };
+
+        let cart = [];
+        let currentOrder = null;
+        let currentCategory = 'all';
+        let editingProductId = null;
+        let isAdminMode = false;
+        let adminUnlockSequence = [];
+        const ADMIN_SEQUENCE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight'];
+        let adminPasswordAttempts = 0;
+        const MAX_ADMIN_ATTEMPTS = 3;
+
+        // Funciones de navegación
+        function showScreen(screenName) {
+            // Ocultar todas las pantallas
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            // Mostrar la pantalla seleccionada
+            const targetScreen = document.getElementById(screenName + '-screen');
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+            }
+        }
+
+        // Funciones de categorías
+        function renderCategories() {
+            const container = document.getElementById('category-filters');
+            if (!container) return;
+            
+            container.innerHTML = `
+                <button class="category-filter active" data-category="all">
+                    <span class="text-2xl">🍽️</span>
+                    <span>Todos</span>
+                </button>
+            `;
+            
+            menuData.categories.filter(cat => cat.active).forEach(category => {
+                container.innerHTML += `
+                    <button class="category-filter" data-category="${category.id}">
+                        <span class="text-2xl">${category.icon}</span>
+                        <span>${category.name}</span>
+                    </button>
+                `;
+            });
+
+            // Agregar event listeners a los filtros
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.category-filter').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.dataset.category;
+                    renderMenu();
+                });
+            });
+        }
+
+        // Función de renderizado del menú
+        function renderMenu() {
+            const container = document.getElementById('menu-items');
+            if (!container) return;
+            
+            const searchInput = document.getElementById('search-input');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+            
+            let filteredProducts = menuData.products.filter(product => {
+                const category = menuData.categories.find(c => c.id === product.category);
+                const categoryActive = category && category.active;
+                const matchesCategory = currentCategory === 'all' || product.category === currentCategory;
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) || 
+                                    product.description.toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch && product.available && categoryActive;
+            });
+
+            container.innerHTML = '';
+            filteredProducts.forEach(product => {
+                const badges = product.badges ? product.badges.map(badge => {
+                    const badgeColors = {
+                        'popular': 'bg-red-500',
+                        'spicy': 'bg-orange-500',
+                        'new': 'bg-green-500',
+                        'special': 'bg-purple-500'
+                    };
+                    return `<span class="inline-block px-2 py-1 text-xs text-white rounded-full ${badgeColors[badge] || 'bg-gray-500'}">${badge}</span>`;
+                }).join(' ') : '';
+
+                container.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-lg overflow-hidden card-hover">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-2">
+                                <h3 class="text-xl font-bold text-gray-800">${product.name}</h3>
+                                <span class="text-2xl font-bold text-orange-500">${product.price}</span>
+                            </div>
+                            <p class="text-gray-600 mb-4">${product.description}</p>
+                            <div class="flex justify-between items-center">
+                                <div class="space-x-1">${badges}</div>
+                                <button class="btn-primary text-white px-4 py-2 rounded-lg font-medium" onclick="addToCart(${product.id})">
+                                    <i class="fas fa-plus mr-1"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Funciones del carrito
+        function addToCart(productId) {
+            const product = menuData.products.find(p => p.id === productId);
+            if (!product) return;
+            
+            const existingItem = cart.find(item => item.id === productId);
+            
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            
+            updateCartBadge();
+            showToast(`✅ ${product.name} agregado al carrito`);
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cart-badge');
+            if (!badge) return;
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            if (totalItems > 0) {
+                badge.textContent = totalItems;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+            
+            renderCart();
+        }
+
+        function renderCart() {
+            const emptyCart = document.getElementById('empty-cart');
+            const cartItems = document.getElementById('cart-items');
+            const cartSummary = document.getElementById('cart-summary');
+
+            if (!emptyCart || !cartItems || !cartSummary) return;
+
+            if (cart.length === 0) {
+                emptyCart.classList.remove('hidden');
+                cartItems.innerHTML = '';
+                cartSummary.classList.add('hidden');
+                return;
+            }
+
+            emptyCart.classList.add('hidden');
+            cartSummary.classList.remove('hidden');
+
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                cartItems.innerHTML += `
+                    <div class="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+                        <div class="flex items-center space-x-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
+                            <div>
+                                <h4 class="font-bold">${item.name}</h4>
+                                <p class="text-gray-600">${item.price} MXN</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center space-x-2">
+                                <button class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center hover:bg-gray-300" onclick="updateQuantity(${item.id}, -1)">
+                                    <i class="fas fa-minus text-sm"></i>
+                                </button>
+                                <span class="w-8 text-center font-bold">${item.quantity}</span>
+                                <button class="w-8 h-8 bg-orange-500 text-white rounded-full flex items-center justify-center hover:bg-orange-600" onclick="updateQuantity(${item.id}, 1)">
+                                    <i class="fas fa-plus text-sm"></i>
+                                </button>
+                            </div>
+                            <button class="text-red-500 hover:text-red-700" onclick="removeFromCart(${item.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            updateCartTotals();
+        }
+
+        function updateQuantity(productId, change) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                item.quantity += change;
+                if (item.quantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    renderCart();
+                    updateCartBadge();
+                }
+            }
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            renderCart();
+            updateCartBadge();
+        }
+
+        function updateCartTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryToggle = document.getElementById('delivery-toggle');
+            const deliveryCost = (deliveryToggle && deliveryToggle.checked) ? 0 : 35;
+            const total = subtotal + deliveryCost;
+            
+            const subtotalEl = document.getElementById('payment-subtotal');
+            const deliveryCostEl = document.getElementById('delivery-cost');
+            const totalEl = document.getElementById('total-cost');
+            
+            if (subtotalEl) subtotalEl.textContent = `${subtotal.toFixed(2)} MXN`;
+            if (deliveryCostEl) deliveryCostEl.textContent = `${deliveryCost.toFixed(2)} MXN`;
+            if (totalEl) totalEl.textContent = `${total.toFixed(2)} MXN`;
+        }
+
+        // Configuración del toggle de entrega
+        function setupDeliveryToggle() {
+            const deliveryToggle = document.getElementById('delivery-toggle');
+            const deliveryForm = document.getElementById('delivery-form');
+            const deliveryCostContainer = document.getElementById('delivery-cost-container');
+            const pickupInfo = document.getElementById('pickup-info');
+            const deliveryMethodText = document.getElementById('delivery-method-text');
+            const toggleDot = document.querySelector('.toggle-dot');
+            const toggleBg = document.querySelector('.toggle-bg');
+            
+            if (!deliveryToggle || !toggleDot || !toggleBg) return;
+            
+            function updateToggleState() {
+                if (deliveryToggle.checked) {
+                    toggleDot.style.transform = 'translateX(32px)';
+                    toggleBg.style.backgroundColor = '#10B981';
+                    if (deliveryMethodText) deliveryMethodText.textContent = 'Recoger en local (Gratis)';
+                    if (deliveryForm) deliveryForm.classList.add('hidden');
+                    if (pickupInfo) pickupInfo.classList.remove('hidden');
+                    if (deliveryCostContainer) deliveryCostContainer.classList.add('hidden');
+                } else {
+                    toggleDot.style.transform = 'translateX(4px)';
+                    toggleBg.style.backgroundColor = '#FF6B35';
+                    if (deliveryMethodText) deliveryMethodText.textContent = 'Envío a domicilio (+$35 MXN)';
+                    if (deliveryForm) deliveryForm.classList.remove('hidden');
+                    if (pickupInfo) pickupInfo.classList.add('hidden');
+                    if (deliveryCostContainer) deliveryCostContainer.classList.remove('hidden');
+                }
+                updateCartTotals();
+            }
+            
+            deliveryToggle.addEventListener('change', updateToggleState);
+            toggleBg.addEventListener('click', function() {
+                deliveryToggle.checked = !deliveryToggle.checked;
+                updateToggleState();
+            });
+            
+            // Estado inicial
+            deliveryToggle.checked = false;
+            updateToggleState();
+        }
+
+        // Funciones de pago
+        function processPayment() {
+            const cardNumber = document.getElementById('card-number');
+            const expiry = document.getElementById('expiry');
+            const cvv = document.getElementById('cvv');
+            const name = document.getElementById('name');
+            
+            if (!cardNumber || !expiry || !cvv || !name ||
+                !cardNumber.value || !expiry.value || !cvv.value || !name.value) {
+                showToast('❌ Por favor completa todos los campos de pago');
+                return;
+            }
+            
+            showLoading();
+            
+            setTimeout(() => {
+                createOrder();
+                showScreen('tracking');
+                hideLoading();
+                showToast('🎉 ¡Pedido realizado exitosamente!');
+            }, 2000);
+        }
+
+        function createOrder() {
+            const orderId = Math.floor(100000 + Math.random() * 900000);
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryToggle = document.getElementById('delivery-toggle');
+            const deliveryCost = (deliveryToggle && deliveryToggle.checked) ? 0 : 35;
+            const total = subtotal + deliveryCost;
+            
+            currentOrder = {
+                id: orderId,
+                items: [...cart],
+                subtotal,
+                deliveryCost,
+                total,
+                status: 'Preparando',
+                createdAt: new Date().toISOString(),
+                delivery: !(deliveryToggle && deliveryToggle.checked),
+                address: !(deliveryToggle && deliveryToggle.checked) ? {
+                    street: document.getElementById('street')?.value || '',
+                    number: document.getElementById('number')?.value || '',
+                    colony: document.getElementById('colony')?.value || ''
+                } : null,
+                customer: {
+                    name: document.getElementById('name')?.value || 'Cliente',
+                    phone: document.getElementById('customer-phone')?.value || '9999999999'
+                }
+            };
+            
+            cart = [];
+            updateCartBadge();
+            showTrackingScreen();
+        }
+
+        function showTrackingScreen() {
+            if (!currentOrder) return;
+            
+            const orderDetails = document.getElementById('order-details');
+            if (!orderDetails) return;
+            
+            orderDetails.innerHTML = `
+                <div class="mb-4">
+                    <h4 class="font-bold text-lg">Pedido #${currentOrder.id}</h4>
+                    <p class="text-gray-600">${new Date(currentOrder.createdAt).toLocaleString()}</p>
+                </div>
+                <div class="space-y-2">
+                    ${currentOrder.items.map(item => `
+                        <div class="flex justify-between">
+                            <span>${item.quantity}x ${item.name}</span>
+                            <span>${(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
+                    `).join('')}
+                    <div class="border-t pt-2 flex justify-between font-bold">
+                        <span>Total:</span>
+                        <span>${currentOrder.total.toFixed(2)} MXN</span>
+                    </div>
+                </div>
+            `;
+            
+            // Simular progreso del pedido
+            setTimeout(() => updateOrderStatus('Preparando', 25), 1000);
+            setTimeout(() => updateOrderStatus('Cocinando', 50), 5000);
+            setTimeout(() => updateOrderStatus('Empacando', 75), 10000);
+            setTimeout(() => updateOrderStatus('Listo', 100), 15000);
+        }
+
+        function updateOrderStatus(status, progress) {
+            const orderStatusEl = document.getElementById('order-status');
+            const progressBarEl = document.getElementById('progress-bar');
+            const estimatedTimeEl = document.getElementById('estimated-time');
+            
+            if (orderStatusEl) orderStatusEl.textContent = status;
+            if (progressBarEl) progressBarEl.style.width = progress + '%';
+            
+            if (progress === 100 && estimatedTimeEl) {
+                estimatedTimeEl.textContent = '¡Listo!';
+                showToast('🎉 ¡Tu pedido está listo!');
+            }
+        }
+
+        // Funciones de administración
+        function exitAdminMode() {
+            isAdminMode = false;
+            adminPasswordAttempts = 0;
+            adminUnlockSequence = [];
+            
+            const adminBtn = document.getElementById('admin-btn');
+            if (adminBtn) adminBtn.classList.add('hidden');
+            
+            showScreen('home');
+            showToast('👋 Has salido del modo administrador');
+        }
+
+        function checkAdminAccess() {
+            if (adminPasswordAttempts >= MAX_ADMIN_ATTEMPTS) {
+                showToast('❌ Demasiados intentos fallidos. Acceso bloqueado.');
+                return false;
+            }
+
+            const password = prompt('🔐 Ingresa la contraseña de administrador:');
+            
+            if (password === 'PORKYRIOS2025') {
+                isAdminMode = true;
+                const adminBtn = document.getElementById('admin-btn');
+                if (adminBtn) adminBtn.classList.remove('hidden');
+                showToast('✅ Acceso de administrador activado');
+                showScreen('admin');
+                return true;
+            } else if (password !== null) {
+                adminPasswordAttempts++;
+                showToast(`❌ Contraseña incorrecta. Intentos restantes: ${MAX_ADMIN_ATTEMPTS - adminPasswordAttempts}`);
+                return false;
+            }
+            return false;
+        }
+
+        function setupAdminAccess() {
+            // Secuencia de teclas Konami Code para activar modo admin
+            document.addEventListener('keydown', function(e) {
+                adminUnlockSequence.push(e.code);
+                
+                if (adminUnlockSequence.length > ADMIN_SEQUENCE.length) {
+                    adminUnlockSequence.shift();
+                }
+                
+                if (adminUnlockSequence.length === ADMIN_SEQUENCE.length) {
+                    if (JSON.stringify(adminUnlockSequence) === JSON.stringify(ADMIN_SEQUENCE)) {
+                        if (!isAdminMode) {
+                            checkAdminAccess();
+                        }
+                        adminUnlockSequence = [];
+                    }
+                }
+            });
+
+            // Triple click en el logo para acceso admin
+            const logo = document.querySelector('img[alt="PORKYRIOS"]');
+            if (logo) {
+                let clickCount = 0;
+                logo.addEventListener('click', function() {
+                    clickCount++;
+                    setTimeout(() => { clickCount = 0; }, 1000);
+                    
+                    if (clickCount === 3 && !isAdminMode) {
+                        checkAdminAccess();
+                    }
+                });
+            }
+        }
+
+        function initAdminTabs() {
+            const tabs = document.querySelectorAll('.admin-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const targetTab = tab.dataset.tab;
+                    if (targetTab) {
+                        switchAdminTab(targetTab);
+                    }
+                });
+            });
+        }
+
+        function switchAdminTab(tabName) {
+            // Cambiar contenido
+            document.querySelectorAll('.admin-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const targetContent = document.getElementById(`admin-${tabName}`);
+            const targetTab = document.querySelector(`[data-tab="${tabName}"]`);
+            
+            if (targetContent) targetContent.classList.add('active');
+            if (targetTab) targetTab.classList.add('active');
+            
+            // Cargar datos específicos
+            switch(tabName) {
+                case 'categories':
+                    renderAdminCategories();
+                    break;
+                case 'products':
+                    renderAdminProducts();
+                    break;
+                case 'settings':
+                    loadSettings();
+                    break;
+            }
+        }
+
+        function renderAdminCategories() {
+            const container = document.getElementById('categories-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+
+            menuData.categories.forEach(category => {
+                const productCount = menuData.products.filter(p => p.category === category.id).length;
+                const statusClass = category.active ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50';
+                const statusText = category.active ? 'Activa' : 'Inactiva';
+                const statusColor = category.active ? 'text-green-600' : 'text-red-600';
+
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-4 border rounded-lg ${statusClass}">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-3xl">${category.icon}</span>
+                            <div>
+                                <h4 class="font-bold text-lg">${category.name}</h4>
+                                <p class="text-sm text-gray-600">${productCount} productos</p>
+                                <span class="text-xs font-medium ${statusColor}">${statusText}</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <label class="switch">
+                                <input type="checkbox" ${category.active ? 'checked' : ''} onchange="toggleCategory('${category.id}')">
+                                <span class="slider"></span>
+                            </label>
+                            <button class="text-red-500 hover:text-red-700" onclick="deleteCategory('${category.id}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function showAddCategoryForm() {
+            const form = document.getElementById('category-form');
+            if (form) {
+                form.classList.remove('hidden');
+                clearCategoryForm();
+            }
+        }
+
+        function saveCategory() {
+            const idEl = document.getElementById('category-id');
+            const nameEl = document.getElementById('category-name');
+            const iconEl = document.getElementById('category-icon');
+            const statusEl = document.getElementById('category-status');
+
+            if (!idEl || !nameEl || !iconEl || !statusEl) return;
+
+            const id = idEl.value.toLowerCase().replace(/\s+/g, '');
+            const name = nameEl.value;
+            const icon = iconEl.value;
+            const active = statusEl.value === 'true';
+
+            if (!id || !name || !icon) {
+                showToast('❌ Por favor completa todos los campos');
+                return;
+            }
+
+            if (menuData.categories.find(c => c.id === id)) {
+                showToast('❌ Ya existe una categoría con ese ID');
+                return;
+            }
+
+            menuData.categories.push({ id, name, icon, active });
+            showToast('✅ Categoría agregada correctamente');
+            
+            cancelCategoryForm();
+            renderAdminCategories();
+            renderCategories();
+        }
+
+        function toggleCategory(categoryId) {
+            const category = menuData.categories.find(c => c.id === categoryId);
+            if (category) {
+                category.active = !category.active;
+                renderAdminCategories();
+                renderCategories();
+                renderMenu();
+                showToast(`${category.active ? '✅ Activada' : '❌ Desactivada'}: ${category.name}`);
+            }
+        }
+
+        function deleteCategory(categoryId) {
+            const productsInCategory = menuData.products.filter(p => p.category === categoryId);
+            if (productsInCategory.length > 0) {
+                showToast('❌ No se puede eliminar: hay productos en esta categoría');
+                return;
+            }
+
+            if (confirm('¿Estás seguro de eliminar esta categoría?')) {
+                menuData.categories = menuData.categories.filter(c => c.id !== categoryId);
+                renderAdminCategories();
+                renderCategories();
+                showToast('✅ Categoría eliminada');
+            }
+        }
+
+        function clearCategoryForm() {
+            const fields = ['category-id', 'category-name', 'category-icon'];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            const statusEl = document.getElementById('category-status');
+            if (statusEl) statusEl.value = 'true';
+        }
+
+        function cancelCategoryForm() {
+            const form = document.getElementById('category-form');
+            if (form) form.classList.add('hidden');
+        }
+
+        function renderAdminProducts() {
+            const container = document.getElementById('admin-products-list');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            const categorySelect = document.getElementById('product-category');
+            if (categorySelect) {
+                categorySelect.innerHTML = '<option value="">Seleccionar categoría</option>';
+                menuData.categories.filter(cat => cat.active).forEach(cat => {
+                    categorySelect.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                });
+            }
+
+            const activeCategories = menuData.categories.filter(cat => cat.active);
+            
+            activeCategories.forEach(category => {
+                const categoryProducts = menuData.products.filter(p => p.category === category.id);
+                
+                if (categoryProducts.length > 0) {
+                    container.innerHTML += `
+                        <div class="mb-6">
+                            <h4 class="text-lg font-bold text-gray-700 mb-3 flex items-center">
+                                <span class="text-2xl mr-2">${category.icon}</span>
+                                ${category.name} (${categoryProducts.length})
+                            </h4>
+                            <div class="space-y-2 ml-8">
+                                ${categoryProducts.map(product => `
+                                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg bg-gray-50">
+                                        <div class="flex items-center space-x-3">
+                                            <img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg">
+                                            <div>
+                                                <h5 class="font-bold text-sm">${product.name}</h5>
+                                                <p class="text-xs text-gray-600">${product.price} MXN</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <label class="switch scale-75">
+                                                <input type="checkbox" ${product.available ? 'checked' : ''} onchange="toggleProduct(${product.id})">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <button class="text-blue-500 hover:text-blue-700 text-sm" onclick="editProduct(${product.id})">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="text-red-500 hover:text-red-700 text-sm" onclick="deleteProduct(${product.id})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        function showAddProductForm() {
+            const form = document.getElementById('product-form');
+            if (form) {
+                form.classList.remove('hidden');
+                editingProductId = null;
+                clearProductForm();
+            }
+        }
+
+        function editProduct(productId) {
+            const product = menuData.products.find(p => p.id === productId);
+            if (!product) return;
+            
+            editingProductId = productId;
+            
+            const fields = {
+                'product-name': product.name,
+                'product-price': product.price,
+                'product-category': product.category,
+                'product-image': product.image,
+                'product-description': product.description,
+                'product-badges': product.badges ? product.badges.join(', ') : ''
+            };
+            
+            Object.entries(fields).forEach(([id, value]) => {
+                const el = document.getElementById(id);
+                if (el) el.value = value;
+            });
+            
+            const form = document.getElementById('product-form');
+            if (form) form.classList.remove('hidden');
+        }
+
+        function saveProduct() {
+            const nameEl = document.getElementById('product-name');
+            const priceEl = document.getElementById('product-price');
+            const categoryEl = document.getElementById('product-category');
+            const imageEl = document.getElementById('product-image');
+            const descriptionEl = document.getElementById('product-description');
+            const badgesEl = document.getElementById('product-badges');
+
+            if (!nameEl || !priceEl || !categoryEl) return;
+
+            const name = nameEl.value;
+            const price = parseFloat(priceEl.value);
+            const category = categoryEl.value;
+            const image = imageEl ? imageEl.value : '';
+            const description = descriptionEl ? descriptionEl.value : '';
+            const badges = badgesEl ? badgesEl.value.split(',').map(b => b.trim()).filter(b => b) : [];
+
+            if (!name || !price || !category) {
+                showToast('❌ Por favor completa todos los campos requeridos');
+                return;
+            }
+
+            if (editingProductId) {
+                const productIndex = menuData.products.findIndex(p => p.id === editingProductId);
+                if (productIndex !== -1) {
+                    menuData.products[productIndex] = {
+                        ...menuData.products[productIndex],
+                        name, price, category, image, description, badges
+                    };
+                    showToast('✅ Producto actualizado correctamente');
+                }
+            } else {
+                const newId = Math.max(...menuData.products.map(p => p.id), 0) + 1;
+                menuData.products.push({
+                    id: newId,
+                    name, price, category, image, description, badges,
+                    available: true
+                });
+                showToast('✅ Producto agregado correctamente');
+            }
+
+            cancelProductForm();
+            renderAdminProducts();
+            renderMenu();
+        }
+
+        function deleteProduct(productId) {
+            if (confirm('¿Estás seguro de eliminar este producto?')) {
+                menuData.products = menuData.products.filter(p => p.id !== productId);
+                renderAdminProducts();
+                renderMenu();
+                showToast('✅ Producto eliminado');
+            }
+        }
+
+        function clearProductForm() {
+            const fields = ['product-name', 'product-price', 'product-category', 'product-image', 'product-description', 'product-badges'];
+            fields.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+        }
+
+        function cancelProductForm() {
+            const form = document.getElementById('product-form');
+            if (form) form.classList.add('hidden');
+            editingProductId = null;
+        }
+
+        function toggleProduct(productId) {
+            const product = menuData.products.find(p => p.id === productId);
+            if (product) {
+                product.available = !product.available;
+                renderAdminProducts();
+                renderMenu();
+                showToast(`${product.available ? '✅ Habilitado' : '❌ Deshabilitado'}: ${product.name}`);
+            }
+        }
+
+        function loadSettings() {
+            // Los valores por defecto ya están en el HTML
+        }
+
+        function saveSettings() {
+            showToast('✅ Configuración guardada correctamente');
+        }
+
+        // Funciones de utilidad
+        function showLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.classList.add('active');
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loading-overlay');
+            if (overlay) overlay.classList.remove('active');
+        }
+
+        function showToast(message) {
+            // Remover toast existente
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            // Crear nuevo toast
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Mostrar toast
+            setTimeout(() => toast.classList.add('show'), 100);
+            
+            // Ocultar toast después de 3 segundos
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Configuración de formateo de campos de pago
+        function setupPaymentFormatting() {
+            const cardNumberEl = document.getElementById('card-number');
+            if (cardNumberEl) {
+                cardNumberEl.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    value = value.replace(/(\d{4})(?=\d)/g, '$1 ');
+                    e.target.value = value;
+                });
+            }
+
+            const expiryEl = document.getElementById('expiry');
+            if (expiryEl) {
+                expiryEl.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length >= 2) {
+                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
+                    }
+                    e.target.value = value;
+                });
+            }
+
+            const cvvEl = document.getElementById('cvv');
+            if (cvvEl) {
+                cvvEl.addEventListener('input', function(e) {
+                    e.target.value = e.target.value.replace(/\D/g, '');
+                });
+            }
+
+            const phoneEl = document.getElementById('customer-phone');
+            if (phoneEl) {
+                phoneEl.addEventListener('input', function(e) {
+                    let value = e.target.value.replace(/\D/g, '');
+                    if (value.length <= 10) {
+                        if (value.length >= 6) {
+                            value = value.substring(0, 3) + '-' + value.substring(3, 6) + '-' + value.substring(6);
+                        } else if (value.length >= 3) {
+                            value = value.substring(0, 3) + '-' + value.substring(3);
+                        }
+                    }
+                    e.target.value = value;
+                });
+            }
+        }
+
+        // Event listeners para navegación
+        function setupEventListeners() {
+            // Navegación principal
+            const startOrderBtn = document.getElementById('start-order-btn');
+            if (startOrderBtn) startOrderBtn.addEventListener('click', () => showScreen('menu'));
+
+            const menuBtn = document.getElementById('menu-btn');
+            if (menuBtn) menuBtn.addEventListener('click', () => showScreen('menu'));
+
+            const cartBtn = document.getElementById('cart-btn');
+            if (cartBtn) cartBtn.addEventListener('click', () => showScreen('cart'));
+
+            const adminBtn = document.getElementById('admin-btn');
+            if (adminBtn) adminBtn.addEventListener('click', () => {
+                if (isAdminMode) {
+                    showScreen('admin');
+                } else {
+                    checkAdminAccess();
+                }
+            });
+
+            // Navegación interna
+            const backToMenuBtn = document.getElementById('back-to-menu');
+            if (backToMenuBtn) backToMenuBtn.addEventListener('click', () => showScreen('menu'));
+
+            const backToCartBtn = document.getElementById('back-to-cart');
+            if (backToCartBtn) backToCartBtn.addEventListener('click', () => showScreen('cart'));
+
+            const checkoutBtn = document.getElementById('checkout-btn');
+            if (checkoutBtn) checkoutBtn.addEventListener('click', () => showScreen('payment'));
+
+            const processPaymentBtn = document.getElementById('process-payment');
+            if (processPaymentBtn) processPaymentBtn.addEventListener('click', processPayment);
+
+            const trackNewOrderBtn = document.getElementById('track-new-order');
+            if (trackNewOrderBtn) trackNewOrderBtn.addEventListener('click', () => showScreen('home'));
+
+            const exitAdminBtn = document.getElementById('exit-admin-btn');
+            if (exitAdminBtn) exitAdminBtn.addEventListener('click', exitAdminMode);
+
+            // Búsqueda
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) searchInput.addEventListener('input', renderMenu);
+        }
+
+        // Inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                setupEventListeners();
+                setupDeliveryToggle();
+                setupPaymentFormatting();
+                setupAdminAccess();
+                updateCartBadge();
+                renderCategories();
+                renderMenu();
+                initAdminTabs();
+                renderAdminCategories();
+                
+                console.log('✅ PORKYRIOS inicializado correctamente');
+                showToast('🍽️ ¡Bienvenido a PORKYRIOS! El verdadero lujo está en el sabor');
+            } catch (error) {
+                console.error('❌ Error en la inicialización:', error);
+                showToast('❌ Error en la inicialización del sistema');
+            }
+        });
+
+        // Funciones globales para onclick en HTML
+        window.addToCart = addToCart;
+        window.updateQuantity = updateQuantity;
+        window.removeFromCart = removeFromCart;
+        window.processPayment = processPayment;
+        window.exitAdminMode = exitAdminMode;
+        window.showAddCategoryForm = showAddCategoryForm;
+        window.saveCategory = saveCategory;
+        window.cancelCategoryForm = cancelCategoryForm;
+        window.toggleCategory = toggleCategory;
+        window.deleteCategory = deleteCategory;
+        window.showAddProductForm = showAddProductForm;
+        window.editProduct = editProduct;
+        window.saveProduct = saveProduct;
+        window.cancelProductForm = cancelProductForm;
+        window.toggleProduct = toggleProduct;
+        window.deleteProduct = deleteProduct;
+        window.saveSettings = saveSettings;
+    </script>
+</body>
+</html>
